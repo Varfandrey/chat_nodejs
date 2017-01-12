@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title></title>
+</head>
+<body>
+    <form id="publish">
+        <input type="text" name="message">
+        <input type="submit" value="Отправить">
+    </form>
+
+    <ul id="messages"></ul>
+
+    <script>
+        subscribe();
+
+        publish.onsubmit = function(){
+            console.log(this.elements.message.value);
+
+            var xhr = new XMLHttpRequest();
+            xhr.open("POST", "/publish", true);
+            xhr.send(JSON.stringify({message: this.elements.message.value}));
+            this.elements.message.value = "";
+
+            return false;
+        };
+
+
+
+        function subscribe(){
+            var xhr = new XMLHttpRequest();
+            xhr.open("GET", "/subscribe", true);
+            xhr.onload = function(){
+                var Li = document.createElement("li");
+                Li.textContent = this.responseText;
+                //messages.insertBefore(Li, messages.childNodes[0]);
+                messages.appendChild(Li);
+                subscribe();
+            };
+            xhr.send("");
+        }
+
+
+    </script>
+
+
+</body>
+</html>
